@@ -2,6 +2,9 @@ import mongoose from "mongoose";
 
 export const connectDB = async () => {
   try {
+
+    console.log("env variable: ", process.env.DATABASE_URL);
+    
     /* Database connection */
     const connectionInstance = await mongoose.connect(
       `${process.env.DATABASE_URL}/${process.env.DATABASE_NAME}`

@@ -41,9 +41,18 @@ const deliveryPartnerSchema = new mongoose.Schema<DeliveryPartnerTypes>(
       },
     },
     metrics: {
-      rating: Number,
-      completedOrders: Number,
-      cancelledOrders: Number,
+      rating: {
+        type:Number,
+        default:0
+      },
+      completedOrders: {
+        type:Number,
+        default:0
+      },
+      cancelledOrders: {
+        type:Number,
+        default:0
+      },
     },
   },
   {
