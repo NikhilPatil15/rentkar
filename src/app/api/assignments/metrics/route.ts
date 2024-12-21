@@ -1,5 +1,6 @@
 import { connectDB } from "@/lib/database/connectDB";
 import Assignment from "@/lib/models/assignment.model";
+import DeliveryPartner from "@/lib/models/partner.model";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -14,10 +15,14 @@ export async function GET(request: NextRequest) {
     const failureReasons: { reason: string; count: number }[] = [];
 
     for (let assignment of assignments) {
+        const partner = await DeliveryPartner.findById(assignment.partnerId);
+
       if (assignment.status === "success") {
         successCount++;
         totalTime +=
           new Date().getTime() - new Date(assignment.timestamp).getTime();
+       
+        //   partner.metrics.completedOrders += 1;
       } else {
         failureCount++;
         const reason = assignment.reason || "Unknown";
