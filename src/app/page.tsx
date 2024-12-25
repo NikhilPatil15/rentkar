@@ -8,29 +8,51 @@ import { Box, Typography, Grid, Card, CardContent, Chip, Divider } from '@mui/ma
 import { DeliveryPartnerTypes } from '@/types/partner.type';
 import { OrderTypes } from '@/types/order.type';
 import { AssignmentMetrics } from '@/types/assignment.type';
+import axios from 'axios';
 
  const page: React.FC = () => {
-  const [orders, setOrders] = useState<OrderTypes[]>([]);
-  const [partners, setPartners] = useState<DeliveryPartnerTypes[]>([]);
+  const [orders, setOrders] = useState<OrderTypes[] | any>([]);
+  const [partners, setPartners] = useState<DeliveryPartnerTypes[] | any>([]);
   const [metrics, setMetrics] = useState<AssignmentMetrics | null>(null);
 
   useEffect(() => {
+
+    const fetchOrders = async():Promise<OrderTypes> => {
+      const response = await axios.get('/api/order')
+
+      return response.data.data
+    }
+
+    const fetchPartners = async():Promise<DeliveryPartnerTypes> => {
+      const response = await axios.get('/api/partner')
+
+      return response.data.data
+    }
+
+    const fetchAssignmentMetrics = async():Promise<AssignmentMetrics> => {
+      const response = await axios.get('/api/assignments/metrics')
+
+      return response.data.data
+    }
+
     const loadDashboardData = async () => {
-      // const [ordersData, partnersData, metricsData] = await Promise.all([
-      //   // fetchOrders(),
-      //   // fetchPartners(),
-      //   // fetchAssignmentMetrics(),
-      // ]);
-      // setOrders(ordersData);
-      // setPartners(partnersData);
-      // setMetrics(metricsData);
+      const [ordersData, partnersData, metricsData] = await Promise.all([
+        fetchOrders(),
+        fetchPartners(),
+        fetchAssignmentMetrics(),
+      ]);
+      setOrders(ordersData);
+      setPartners(partnersData);
+      setMetrics(metricsData);
     };
+
+    
 
     loadDashboardData();
   }, []);
 
-  const activeOrders = orders.filter((order) => order.status !== 'delivered');
-  const activePartners = partners.filter((partner) => partner.status === 'active');
+  const activeOrders = orders.filter((order:OrderTypes) => order.status !== 'delivered');
+  const activePartners = partners.filter((partner:DeliveryPartnerTypes) => partner.status === 'active');
 
   return (
     <Box sx={{ p: 3 }}>
@@ -79,7 +101,7 @@ import { AssignmentMetrics } from '@/types/assignment.type';
             Active Orders
           </Typography>
           <Grid container spacing={2}>
-            {activeOrders.map((order) => (
+            {activeOrders.map((order:OrderTypes) => (
               <Grid item xs={12} sm={6} key={order.orderNumber}>
                 <Card>
                   <CardContent>
@@ -102,7 +124,7 @@ import { AssignmentMetrics } from '@/types/assignment.type';
             Partner Availability
           </Typography>
           <Grid container spacing={2}>
-            {activePartners.map((partner) => (
+            {activePartners.map((partner:DeliveryPartnerTypes) => (
               <Grid item xs={12} sm={6} key={partner._id}>
                 <Card>
                   <CardContent>

@@ -40,9 +40,11 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       message: "Assignment metrics calculated successfully!",
-      totalAssigned: successCount + failureCount,
-      successRate,
-      averageTime,
+      data:{
+        totalAssigned: successCount + failureCount,
+        successRate,
+        averageTime,
+      },
       status:200
     });
   } catch (error) {

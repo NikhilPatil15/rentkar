@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     await connectDB()
     const orders = await Order.find();
 
-    if (orders.length === 0) {
+    if (!orders) {
       return NextResponse.json(
         { message: "No orders found!" },
         { status: 404 }
@@ -15,12 +15,12 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { message: "Order fetched successfully!", Orders: orders },
+      { message: "Order fetched successfully!", data: orders },
       { status: 200 }
     );
   } catch (error) {
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: error },
       { status: 500 }
     );
   }
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(
-      { message: "Order created successfully!", Orders: newOrder },
+      { message: "Order created successfully!", data: newOrder },
       { status: 200 }
     );
   } catch (error: any) {
